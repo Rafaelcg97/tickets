@@ -170,7 +170,7 @@
                     
                 </div>
                 <div class="col-sm-7 animated flip">
-                    <h1 class="text-danger">Lo sentimos esta página es solamente para administradores de LinuxStore</h1>
+                    <h1 class="text-danger">Lo sentimos esta página es solamente para administradores</h1>
                     <h3 class="text-info text-center">Inicia sesión como administrador para poder acceder</h3>
                 </div>
                 <div class="col-sm-1">&nbsp;</div>
