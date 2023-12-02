@@ -4,7 +4,7 @@ include './class_mysql.php';
 include './config.php';
 
 $id = MysqlQuery::RequestGet('id');
-$sql = Mysql::problemas("SELECT ticket.*, problemas.*, administrador.nombre_completo AS nombre_admin FROM ticket INNER JOIN problemas ON ticket.id_problema = problemas.id_problema
+$sql = Mysql::consulta("SELECT ticket.*, problemas.*, administrador.nombre_completo AS nombre_admin FROM ticket INNER JOIN problemas ON ticket.id_problema = problemas.id_problema
 INNER JOIN administrador ON problemas.id_admin = administrador.id_admin WHERE serie= '$id'");
 $reg = mysqli_fetch_array($sql, MYSQLI_ASSOC);
 
