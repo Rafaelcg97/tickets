@@ -4,8 +4,8 @@ include './class_mysql.php';
 include './config.php';
 
 $id = MysqlQuery::RequestGet('id');
-$sql = Mysql::problemas("SELECT ticket.*, problemass.*, administrador.nombre_completo AS nombre_admin FROM ticket INNER JOIN problemass ON ticket.id_problema = problemass.id_problema
-INNER JOIN administrador ON problemass.id_admin = administrador.id_adminWHERE serie= '$id'");
+$sql = Mysql::problemas("SELECT ticket.*, problemas.*, administrador.nombre_completo AS nombre_admin FROM ticket INNER JOIN problemas ON ticket.id_problema = problemas.id_problema
+INNER JOIN administrador ON problemass.id_admin = administrador.id_admin WHERE serie= '$id'");
 $reg = mysqli_fetch_array($sql, MYSQLI_ASSOC);
 
 class PDF extends FPDF
