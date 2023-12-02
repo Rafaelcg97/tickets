@@ -32,110 +32,95 @@
     // Definir el intervalo 
     $intervalo_minutos = $tiempo* 60; 
 
-    if (($hora >= $horario_manana_inicio && $hora <= $horario_manana_fin) ||
 
-    ($hora >= $horario_tarde_inicio && $hora <= $horario_tarde_fin)
-    )  {
-      if($contador<=$lmt and $current_time - $lastTicketTime >= $intervalo_minutos){
-        if(isset($_POST['fecha_ticket']) && isset($_POST['name_ticket']) && isset($_POST['email_ticket'])){
+    if($contador<=$lmt and $current_time - $lastTicketTime >= $intervalo_minutos){
+      if(isset($_POST['fecha_ticket']) && isset($_POST['name_ticket']) && isset($_POST['email_ticket'])){
 
-  
-          /*Este codigo nos servira para generar un numero diferente para cada ticket*/
-          $codigo = ""; 
-          $longitud = 2; 
-          for ($i=1; $i<=$longitud; $i++){ 
-            $numero = rand(0,9); 
-            $codigo .= $numero; 
-          } 
-          $num=Mysql::consulta("SELECT id FROM ticket");
-          $numero_filas = mysqli_num_rows($num);
-  
-          $numero_filas_total=$numero_filas+1;
-          $id_ticket="TK".$codigo."N".$numero_filas_total;
-          /*Fin codigo numero de ticket*/
-  
-        
-  
 
-          $nombre_ticket= MysqlQuery::RequestPost('name_ticket');
-          $email_ticket=MysqlQuery::RequestPost('email_ticket');
-          $carnet_ticket=MysqlQuery::RequestPost('carnet_ticket');        
-          $mensaje_ticket=MysqlQuery::RequestPost('mensaje_ticket');
-          $estado_ticket="Pendiente";
-          $con=MysqlQuery::RequestPost('id_problema');;
-  
-          if(MysqlQuery::Guardar("ticket","fecha,nombre_usuario,email_cliente,carnet,mensaje,estado_ticket,serie,solucion, id_problema", "NOW(),'$nombre_ticket','$email_ticket','$carnet_ticket','$mensaje_ticket', '$estado_ticket','$id_ticket','','$con'")){
-  
-            $updateTimeQuery = MysqlQuery::Actualizar("limite","last_ticket_created_time= NOW()","ID='1'");
-            ?>
-            <div class="modal fade" id="ticketModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title">TICKET CREADO</h1>
-                        </div>
-                        <div class="modal-body">
-                            <H2>Ticket creado con éxito <br>El TICKET ID es: <strong><?php echo $id_ticket; ?></strong></H2>
-                        </div>
-                        <div class="modal-footer">
-                            <button href="index.php" type="button" class="btn btn-info" data-dismiss="modal">Cerrar</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        /*Este codigo nos servira para generar un numero diferente para cada ticket*/
+        $codigo = ""; 
+        $longitud = 2; 
+        for ($i=1; $i<=$longitud; $i++){ 
+          $numero = rand(0,9); 
+          $codigo .= $numero; 
+        } 
+        $num=Mysql::consulta("SELECT id FROM ticket");
+        $numero_filas = mysqli_num_rows($num);
 
-            <script>
-                $(document).ready(function() {
-                    $('#ticketModal').modal('show');
-                });
-            </script>
+        $numero_filas_total=$numero_filas+1;
+        $id_ticket="TK".$codigo."N".$numero_filas_total;
+        /*Fin codigo numero de ticket*/
+
+      
+
+
+        $nombre_ticket= MysqlQuery::RequestPost('name_ticket');
+        $email_ticket=MysqlQuery::RequestPost('email_ticket');
+        $carnet_ticket=MysqlQuery::RequestPost('carnet_ticket');        
+        $mensaje_ticket=MysqlQuery::RequestPost('mensaje_ticket');
+        $estado_ticket="Pendiente";
+        $con=MysqlQuery::RequestPost('id_problema');;
+
+        if(MysqlQuery::Guardar("ticket","fecha,nombre_usuario,email_cliente,carnet,mensaje,estado_ticket,serie,solucion, id_problema", "NOW(),'$nombre_ticket','$email_ticket','$carnet_ticket','$mensaje_ticket', '$estado_ticket','$id_ticket','','$con'")){
+
+          $updateTimeQuery = MysqlQuery::Actualizar("limite","last_ticket_created_time= NOW()","ID='1'");
+          ?>
+          <div class="modal fade" id="ticketModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                      <div class="modal-header">
+                          <h1 class="modal-title">TICKET CREADO</h1>
+                      </div>
+                      <div class="modal-body">
+                          <H2>Ticket creado con éxito <br>El TICKET ID es: <strong><?php echo $id_ticket; ?></strong></H2>
+                      </div>
+                      <div class="modal-footer">
+                          <button href="index.php" type="button" class="btn btn-info" data-dismiss="modal">Cerrar</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+          <script>
+              $(document).ready(function() {
+                  $('#ticketModal').modal('show');
+              });
+          </script>
 <?php
-  
-          }else{
-            echo '
-                <div class="alert alert-danger alert-dismissible fade in col-sm-3 animated bounceInDown" role="alert" style="position:fixed; top:70px; right:10px; z-index:10;"> 
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    <h4 class="text-center">OCURRIÓ UN ERROR</h4>
-                    <p class="text-center">
-                        No hemos podido crear el ticket. Por favor intente nuevamente.
-                    </p>
-                </div>
-            ';
-          }
+
+        }else{
+          echo '
+              <div class="alert alert-danger alert-dismissible fade in col-sm-3 animated bounceInDown" role="alert" style="position:fixed; top:70px; right:10px; z-index:10;"> 
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                  <h4 class="text-center">OCURRIÓ UN ERROR</h4>
+                  <p class="text-center">
+                      No hemos podido crear el ticket. Por favor intente nuevamente.
+                  </p>
+              </div>
+          ';
         }
-    }elseif($contador>=$lmt){
-      echo '
-      <div class="alert alert-danger alert-dismissible fade in col-sm-3 animated bounceInDown" role="alert" style="position:fixed; top:70px; right:10px; z-index:10;"> 
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-          <h4 class="text-center">OCURRIÓ UN ERROR</h4>
-          <p class="text-center">
-              Limite de tickets
-          </p>
-      </div>
-    ';
-    }elseif($current_time - $lastTicketTime <= $intervalo_minutos){
-      echo '
-      <div class="alert alert-danger alert-dismissible fade in col-sm-3 animated bounceInDown" role="alert" style="position:fixed; top:70px; right:10px; z-index:10;"> 
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-          <h4 class="text-center"></h4>
-          <p class="text-center">
-              Espere  '.$tiempo.' minutos para generar otro ticket
-          </p>
-      </div>
-    ';
-    }    
-  } else {
+      }
+  }elseif($contador>=$lmt){
+    echo '
+    <div class="alert alert-danger alert-dismissible fade in col-sm-3 animated bounceInDown" role="alert" style="position:fixed; top:70px; right:10px; z-index:10;"> 
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+        <h4 class="text-center">OCURRIÓ UN ERROR</h4>
+        <p class="text-center">
+            Limite de tickets
+        </p>
+    </div>
+  ';
+  }elseif($current_time - $lastTicketTime <= $intervalo_minutos){
     echo '
     <div class="alert alert-danger alert-dismissible fade in col-sm-3 animated bounceInDown" role="alert" style="position:fixed; top:70px; right:10px; z-index:10;"> 
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
         <h4 class="text-center"></h4>
         <p class="text-center">
-        La generación de tickets solo está permitida entre las 8 AM y las 12 PM, y de 1 PM a 5 PM.
+            Espere  '.$tiempo.' minutos para generar otro ticket
         </p>
     </div>
   ';
   }
-
   ?>
           <div class="container">
             <div class="row well">
