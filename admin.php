@@ -35,7 +35,7 @@ if($_SESSION['tipo']!="admin"){
           </div>
         </div>
         <?php
-            $WhiteList=["ticketadmin","ticketedit","users","admin","config","index"];
+            $WhiteList=["ticketadmin","ticketedit","users","admin","config","index", "consulta"];
             if(isset($_GET['view']) && in_array($_GET['view'], $WhiteList) && is_file("./admin/".$_GET['view']."-view.php")){
                 include "./admin/".$_GET['view']."-view.php";
             }else{

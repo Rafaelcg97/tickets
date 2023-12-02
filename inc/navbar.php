@@ -25,6 +25,9 @@
                             <a href="admin.php?view=admin"><span class="glyphicon glyphicon-user"></span> &nbsp;Administrar Administradores</a>
                         </li>
                         <li>
+                            <a href="admin.php?view=consulta"><span class="glyphicon glyphicon-user"></span> &nbsp;Administrar consultas</a>
+                        </li>
+                        <li>
                             <a href="admin.php?view=config"><i class="fa fa-cogs"></i> &nbsp; Configuracion</a>
                         </li>
                         <?php endif; ?> 

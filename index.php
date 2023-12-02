@@ -32,7 +32,7 @@ $_SESSION['start_time'] = time();
         <?php
             if(isset($_GET['view'])){
                 $content=$_GET['view'];
-                $WhiteList=["index","ticket","ticketcon"];
+                $WhiteList=["index","ticket","ticketcon", "consulta", "consulta"];
                 if(in_array($content, $WhiteList) && is_file("./user/".$content."-view.php")){
                     include "./user/".$content."-view.php";
                 }else{
