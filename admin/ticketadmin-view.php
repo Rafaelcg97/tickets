@@ -15,7 +15,7 @@
             <?php
                 if(isset($_POST['id_del'])){
                     $id = MysqlQuery::RequestPost('id_del');
-                    if(MysqlQuery::Eliminar("ticket", "id='$id'")){
+                    if(MysqlQuery::Eliminar("ticket", "id_consulta='$id'")){
                         
                         echo '
                             <div class="alert alert-info alert-dismissible fade in col-sm-3 animated bounceInDown" role="alert" style="position:fixed; top:70px; right:10px; z-index:10;"> 
@@ -138,22 +138,41 @@
                                 
                                 if(isset($_GET['ticket'])){
                                     if($_GET['ticket']=="all"){
-                                        $consulta="SELECT SQL_CALC_FOUND_ROWS * FROM ticket LIMIT $inicio, $regpagina";
+                                        $consulta="SELECT SQL_CALC_FOUND_ROWS ticket.*, consultas.*, administrador.nombre_completo AS nombre_admin FROM ticket
+                                        INNER JOIN consultas ON ticket.id_consulta = consultas.id_consulta
+                                        INNER JOIN administrador ON consultas.id_admin = administrador.id_admin
+                                        LIMIT $inicio, $regpagina";
                                     }elseif($_GET['ticket']=="pending"){
-                                        $consulta="SELECT SQL_CALC_FOUND_ROWS * FROM ticket WHERE estado_ticket='Pendiente' LIMIT $inicio, $regpagina";
+                                        $consulta="SELECT SQL_CALC_FOUND_ROWS ticket.*, consultas.*, administrador.nombre_completo AS nombre_admin FROM ticket
+                                        INNER JOIN consultas ON ticket.id_consulta = consultas.id_consulta
+                                        INNER JOIN administrador ON consultas.id_admin = administrador.id_admin
+                                        WHERE estado_ticket='Pendiente' LIMIT $inicio, $regpagina";
                                     }elseif($_GET['ticket']=="process"){
-                                        $consulta="SELECT SQL_CALC_FOUND_ROWS * FROM ticket WHERE estado_ticket='En proceso' LIMIT $inicio, $regpagina";
+                                        $consulta="SELECT SQL_CALC_FOUND_ROWS ticket.*, consultas.*, administrador.nombre_completo AS nombre_admin FROM ticket
+                                        INNER JOIN consultas ON ticket.id_consulta = consultas.id_consulta
+                                        INNER JOIN administrador ON consultas.id_admin = administrador.id_admin
+                                        WHERE  estado_ticket='En proceso' LIMIT $inicio, $regpagina";
                                     }elseif($_GET['ticket']=="resolved"){
-                                        $consulta="SELECT SQL_CALC_FOUND_ROWS * FROM ticket WHERE estado_ticket='Resuelto' LIMIT $inicio, $regpagina";
+                                        $consulta="SELECT SQL_CALC_FOUND_ROWS ticket.*, consultas.*, administrador.nombre_completo AS nombre_admin FROM ticket
+                                        INNER JOIN consultas ON ticket.id_consulta = consultas.id_consulta
+                                        INNER JOIN administrador ON consultas.id_admin = administrador.id_admin
+                                        WHERE estado_ticket='Resuelto' LIMIT $inicio, $regpagina";
                                     }else{
-                                        $consulta="SELECT SQL_CALC_FOUND_ROWS * FROM ticket LIMIT $inicio, $regpagina";
+                                        $consulta="SELECT SQL_CALC_FOUND_ROWS ticket.*, consultas.*, administrador.nombre_completo AS nombre_admin FROM ticket
+                                        INNER JOIN consultas ON ticket.id_consulta = consultas.id_consulta
+                                        INNER JOIN administrador ON consultas.id_admin = administrador.id_admin 
+                                        LIMIT $inicio, $regpagina";
                                     }
                                 }else{
-                                    $consulta="SELECT SQL_CALC_FOUND_ROWS * FROM ticket LIMIT $inicio, $regpagina";
+                                    $consulta="SELECT SQL_CALC_FOUND_ROWS ticket.*, consultas.*, administrador.nombre_completo AS nombre_admin FROM ticket
+                                    INNER JOIN consultas ON ticket.id_consulta = consultas.id_consulta
+                                    INNER JOIN administrador ON consultas.id_admin = administrador.id_admin LIMIT $inicio, $regpagina";
                                 }
 
 
                                 $selticket=mysqli_query($mysqli,$consulta);
+
+
 
                                 $totalregistros = mysqli_query($mysqli,"SELECT FOUND_ROWS()");
                                 $totalregistros = mysqli_fetch_array($totalregistros, MYSQLI_ASSOC);
@@ -172,6 +191,7 @@
                                         <th class="text-center">Nombre</th>
                                         <th class="text-center">Email</th>
                                         <th class="text-center">Carnet</th>
+                                        <th class="text-center">encargado</th>
                                         <th class="text-center">Opciones</th>
                                     </tr>
                                 </thead>
@@ -179,6 +199,7 @@
                                     <?php
                                         $ct=$inicio+1;
                                         while ($row=mysqli_fetch_array($selticket, MYSQLI_ASSOC)): 
+                                    
                                     ?>
                                     <tr>
                                         <td class="text-center"><?php echo $ct; ?></td>
@@ -188,6 +209,7 @@
                                         <td class="text-center"><?php echo $row['nombre_usuario']; ?></td>
                                         <td class="text-center"><?php echo $row['email_cliente']; ?></td>
                                         <td class="text-center"><?php echo $row['carnet']; ?></td>
+                                        <td class="text-center"><?php echo $row['nombre_admin']; ?></td>
                                         <td class="text-center">
                                             <a href="./lib/pdf.php?id=<?php echo $row['id']; ?>" class="btn btn-sm btn-success" target="_blank"><i class="fa fa-print" aria-hidden="true"></i></a>
 

@@ -4,7 +4,8 @@ include './class_mysql.php';
 include './config.php';
 
 $id = MysqlQuery::RequestGet('id');
-$sql = Mysql::consulta("SELECT * FROM ticket WHERE serie= '$id'");
+$sql = Mysql::consulta("SELECT ticket.*, consultas.*, administrador.nombre_completo AS nombre_admin FROM ticket INNER JOIN consultas ON ticket.id_consulta = consultas.id_consulta
+INNER JOIN administrador ON consultas.id_admin = administrador.id_adminWHERE serie= '$id'");
 $reg = mysqli_fetch_array($sql, MYSQLI_ASSOC);
 
 class PDF extends FPDF
@@ -37,6 +38,8 @@ $pdf->Cell (35,10,'Serie',1,0,'C',true);
 $pdf->Cell (0,10,utf8_decode($reg['serie']),1,1,'L');
 $pdf->Cell (35,10,'Estado',1,0,'C',true);
 $pdf->Cell (0,10,utf8_decode($reg['estado_ticket']),1,1,'L');
+$pdf->Cell (35,10,'Encargado',1,0,'C',true);
+$pdf->Cell (0,10,utf8_decode($reg['nombre_admin']),1,1,'L');
 $pdf->Cell (35,10,'Nombre',1,0,'C',true);
 $pdf->Cell (0,10,utf8_decode($reg['nombre_usuario']),1,1,'L');
 $pdf->Cell (35,10,'Email',1,0,'C',true);
