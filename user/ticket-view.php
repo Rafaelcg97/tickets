@@ -62,8 +62,9 @@
           $carnet_ticket=MysqlQuery::RequestPost('carnet_ticket');        
           $mensaje_ticket=MysqlQuery::RequestPost('mensaje_ticket');
           $estado_ticket="Pendiente";
+          $con=MysqlQuery::RequestPost('id_consulta');;
   
-          if(MysqlQuery::Guardar("ticket","fecha,nombre_usuario,email_cliente,carnet,mensaje,estado_ticket,serie,solucion", "NOW(),'$nombre_ticket','$email_ticket','$carnet_ticket','$mensaje_ticket', '$estado_ticket','$id_ticket',''")){
+          if(MysqlQuery::Guardar("ticket","fecha,nombre_usuario,email_cliente,carnet,mensaje,estado_ticket,serie,solucion, id_consulta", "NOW(),'$nombre_ticket','$email_ticket','$carnet_ticket','$mensaje_ticket', '$estado_ticket','$id_ticket','','$con'")){
   
             $updateTimeQuery = MysqlQuery::Actualizar("limite","last_ticket_created_time= NOW()","ID='1'");
             ?>
@@ -208,7 +209,26 @@
                           <div class="form-group">
                             <label  class="col-sm-2 control-label">Consulta</label>
                             <div class="col-sm-10">
-                              <textarea class="form-control" rows="3" placeholder="Describa brevemente el motivo de su cita" name="mensaje_ticket" required=""></textarea>
+                              <select class="form-control" name="id_consulta" required="">
+                                <?php
+                                // 
+                                $query_consul = Mysql::consulta("SELECT id_consulta, consulta FROM consultas WHERE id_admin != 1 AND id_admin != '$idA'");
+                                 if ($query_consul) {
+                                  while ($consul = mysqli_fetch_assoc($query_consul)) {
+                                    $idcons = $consul['id_consulta'];
+                                    $consulta = $consul['consulta'];
+                                    // 
+                                    $selected = ($idAdmin == $selectedNombreCompleto) ? 'selected' : '';
+                                    echo '<option value="' . $idcons . '" ' . $selected . '>' . $consulta . '</option>';
+                                  }
+                                  mysqli_free_result($query_consul); 
+                                } else {
+                                  echo '<option value="" disabled>No hay administradores disponibles</option>';
+                                }
+                                ?>
+                              </select>
+
+
                             </div>
                           </div>
 

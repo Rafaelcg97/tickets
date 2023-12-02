@@ -1,5 +1,29 @@
-<?php if($_SESSION['nombre']!="" && $_SESSION['tipo']=="admin"){ ?>    
-        <?php
+<?php if($_SESSION['nombre']!="" && $_SESSION['tipo']=="admin"){ 
+
+ if(isset($_POST['id_del'])){
+     $id = MysqlQuery::RequestPost('id_del');
+     if(MysqlQuery::Eliminar("consultas", "id_consulta='$id'")){
+    echo '
+     <div class="alert alert-info alert-dismissible fade in col-sm-3 animated bounceInDown" role="alert" style="position:fixed; top:70px; right:10px; z-index:10;"> 
+     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+     <h4 class="text-center">TICKET ELIMINADO</h4>
+     <p class="text-center">
+     El ticket fue eliminado del sistema con exito
+ </p>
+ </div>
+ ';
+    }else{
+        echo '
+             <div class="alert alert-danger alert-dismissible fade in col-sm-3 animated bounceInDown" role="alert" style="position:fixed; top:70px; right:10px; z-index:10;"> 
+             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+             <h4 class="text-center">OCURRIÓ UN ERROR</h4>
+             <p class="text-center">
+             No hemos podido eliminar el ticket
+             </p>
+         </div>
+         '; 
+     }
+ }
 
 if(isset($_POST['encargado']) && isset($_POST['consulta'])){
 
@@ -125,6 +149,7 @@ if(isset($_POST['encargado']) && isset($_POST['consulta'])){
                                     <th class="text-center">#</th>
                                     <th class="text-center">Encargado</th>
                                     <th class="text-center">Problema</th>
+                                    <th class="text-center">Opciones</th>
                                     <!-- Agregar más columnas si es necesario -->
                                 </tr>
                             </thead>
@@ -137,6 +162,12 @@ if(isset($_POST['encargado']) && isset($_POST['consulta'])){
                                         <td class="text-center"><?php echo $ct; ?></td>
                                         <td class="text-center"><?php echo $row['nombre_admin']; ?></td>
                                         <td class="text-center"><?php echo $row['consulta']; ?></td>
+                                        <td class="text-center">
+                                            <form action="" method="POST" style="display: inline-block;">
+                                                <input type="hidden" name="id_del" value="<?php echo $row['id_consulta']; ?>">
+                                                <button type="submit" class="btn btn-sm btn-danger"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
+                                            </form>
+                                        </td>
                                         <!-- Agregar más celdas si es necesario -->
                                     </tr>
                                 <?php
