@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 02-12-2023 a las 07:40:40
+-- Tiempo de generación: 02-12-2023 a las 08:38:15
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.1.17
 
@@ -48,27 +48,6 @@ INSERT INTO `administrador` (`id_admin`, `nombre_completo`, `nombre_admin`, `cla
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `consultas`
---
-
-CREATE TABLE `consultas` (
-  `id_consulta` int(11) NOT NULL,
-  `id_admin` int(11) NOT NULL,
-  `consulta` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-
---
--- Volcado de datos para la tabla `consultas`
---
-
-INSERT INTO `consultas` (`id_consulta`, `id_admin`, `consulta`) VALUES
-(13, 3, 'Agregar Materia'),
-(14, 2, 'Retirar Materia'),
-(15, 5, 'Cambio de carrera');
-
--- --------------------------------------------------------
-
---
 -- Estructura de tabla para la tabla `limite`
 --
 
@@ -88,6 +67,27 @@ INSERT INTO `limite` (`ID`, `limite_`, `last_ticket_created_time`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `problemas`
+--
+
+CREATE TABLE `problemas` (
+  `id_problema` int(11) NOT NULL,
+  `id_admin` int(11) NOT NULL,
+  `consulta` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `problemas`
+--
+
+INSERT INTO `problemas` (`id_problema`, `id_admin`, `consulta`) VALUES
+(13, 3, 'Agregar Materia'),
+(14, 2, 'Retirar Materia'),
+(15, 5, 'Cambio de carrera');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `ticket`
 --
 
@@ -101,15 +101,15 @@ CREATE TABLE `ticket` (
   `carnet` varchar(70) NOT NULL,
   `mensaje` text NOT NULL,
   `solucion` text NOT NULL,
-  `id_consulta` int(11) NOT NULL
+  `id_problema` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 --
 -- Volcado de datos para la tabla `ticket`
 --
 
-INSERT INTO `ticket` (`id`, `fecha`, `serie`, `estado_ticket`, `nombre_usuario`, `email_cliente`, `carnet`, `mensaje`, `solucion`, `id_consulta`) VALUES
-(111, '2023-12-02 05:24:08', 'TK70N1', 'Pendiente', 'Raul', '789@gmail.com', '7', '', '', 15);
+INSERT INTO `ticket` (`id`, `fecha`, `serie`, `estado_ticket`, `nombre_usuario`, `email_cliente`, `carnet`, `mensaje`, `solucion`, `id_problema`) VALUES
+(111, '2023-12-02 07:29:38', 'TK70N1', 'En proceso', 'Raul', '789@gmail.com', '7', '', '1', 15);
 
 --
 -- Índices para tablas volcadas
@@ -123,16 +123,16 @@ ALTER TABLE `administrador`
   ADD UNIQUE KEY `correo` (`email_admin`);
 
 --
--- Indices de la tabla `consultas`
---
-ALTER TABLE `consultas`
-  ADD PRIMARY KEY (`id_consulta`);
-
---
 -- Indices de la tabla `limite`
 --
 ALTER TABLE `limite`
   ADD PRIMARY KEY (`ID`);
+
+--
+-- Indices de la tabla `problemas`
+--
+ALTER TABLE `problemas`
+  ADD PRIMARY KEY (`id_problema`);
 
 --
 -- Indices de la tabla `ticket`
@@ -152,16 +152,16 @@ ALTER TABLE `administrador`
   MODIFY `id_admin` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT de la tabla `consultas`
---
-ALTER TABLE `consultas`
-  MODIFY `id_consulta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
-
---
 -- AUTO_INCREMENT de la tabla `limite`
 --
 ALTER TABLE `limite`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de la tabla `problemas`
+--
+ALTER TABLE `problemas`
+  MODIFY `id_problema` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT de la tabla `ticket`
