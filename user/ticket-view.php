@@ -14,10 +14,10 @@
     $hora = date('G');
 
     //rangos horarios permitidos
-    $horario_manana_inicio = 8;
+    $horario_manana_inicio = 1;
     $horario_manana_fin = 12;
     $horario_tarde_inicio = 13; // 1 PM
-    $horario_tarde_fin = 23; // 5 PM
+    $horario_tarde_fin = 24; // 5 PM
 
 
     //Ver la ultima creacion tocket
@@ -62,9 +62,9 @@
           $carnet_ticket=MysqlQuery::RequestPost('carnet_ticket');        
           $mensaje_ticket=MysqlQuery::RequestPost('mensaje_ticket');
           $estado_ticket="Pendiente";
-          $con=MysqlQuery::RequestPost('id_consulta');;
+          $con=MysqlQuery::RequestPost('id_problema');;
   
-          if(MysqlQuery::Guardar("ticket","fecha,nombre_usuario,email_cliente,carnet,mensaje,estado_ticket,serie,solucion, id_consulta", "NOW(),'$nombre_ticket','$email_ticket','$carnet_ticket','$mensaje_ticket', '$estado_ticket','$id_ticket','','$con'")){
+          if(MysqlQuery::Guardar("ticket","fecha,nombre_usuario,email_cliente,carnet,mensaje,estado_ticket,serie,solucion, id_problema", "NOW(),'$nombre_ticket','$email_ticket','$carnet_ticket','$mensaje_ticket', '$estado_ticket','$id_ticket','','$con'")){
   
             $updateTimeQuery = MysqlQuery::Actualizar("limite","last_ticket_created_time= NOW()","ID='1'");
             ?>
@@ -209,13 +209,13 @@
                           <div class="form-group">
                             <label  class="col-sm-2 control-label">Consulta</label>
                             <div class="col-sm-10">
-                              <select class="form-control" name="id_consulta" required="">
+                              <select class="form-control" name="id_problema" required="">
                                 <?php
                                 // 
-                                $query_consul = Mysql::consulta("SELECT id_consulta, consulta FROM consultas WHERE id_admin != 1 AND id_admin != '$idA'");
+                                $query_consul = Mysql::consulta("SELECT id_problema, consulta FROM problemas WHERE id_admin != 1 AND id_admin != '$idA'");
                                  if ($query_consul) {
                                   while ($consul = mysqli_fetch_assoc($query_consul)) {
-                                    $idcons = $consul['id_consulta'];
+                                    $idcons = $consul['id_problema'];
                                     $consulta = $consul['consulta'];
                                     // 
                                     $selected = ($idAdmin == $selectedNombreCompleto) ? 'selected' : '';

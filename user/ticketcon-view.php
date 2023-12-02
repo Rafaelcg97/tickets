@@ -28,7 +28,8 @@ if (isset($_POST['del_ticket'])) {
 $email_consul = MysqlQuery::RequestGet('email_consul');
 $id_colsul = MysqlQuery::RequestGet('id_consul');
 
-$consulta_tablaTicket = Mysql::consulta("SELECT * FROM ticket WHERE serie= '$id_colsul' AND email_cliente='$email_consul'");
+$consulta_tablaTicket = Mysql::consulta("SELECT ticket.*,problemas.*, administrador.nombre_completo AS nombre_admin FROM ticket INNER JOIN problemas ON ticket.id_problema = problemas.id_problema
+INNER JOIN administrador ON problemas.id_admin = administrador.id_admin  WHERE serie= '$id_colsul' AND email_cliente='$email_consul'");
 if (mysqli_num_rows($consulta_tablaTicket) >= 1) {
     $lsT = mysqli_fetch_array($consulta_tablaTicket, MYSQLI_ASSOC);
     ?>
@@ -67,6 +68,7 @@ if (mysqli_num_rows($consulta_tablaTicket) >= 1) {
                                           <br>
                                           <div class="row">
                                               <div class="col-sm-6"><strong>Carnet:</strong> <?php echo $lsT['carnet']; ?></div>
+                                              <div class="col-sm-6"><strong>Encargado:</strong> <?php echo $lsT['nombre_admin']; ?></div>
                                           </div>
                                           <br>
                                           <div class="row">

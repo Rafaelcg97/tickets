@@ -2,13 +2,13 @@
 
  if(isset($_POST['id_del'])){
      $id = MysqlQuery::RequestPost('id_del');
-     if(MysqlQuery::Eliminar("consultas", "id_consulta='$id'")){
+     if(MysqlQuery::Eliminar("problemas", "id_problema='$id'")){
     echo '
      <div class="alert alert-info alert-dismissible fade in col-sm-3 animated bounceInDown" role="alert" style="position:fixed; top:70px; right:10px; z-index:10;"> 
      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-     <h4 class="text-center">TICKET ELIMINADO</h4>
+     <h4 class="text-center">Problema Eliminado con Exito</h4>
      <p class="text-center">
-     El ticket fue eliminado del sistema con exito
+     Eliminado del sistema con exito
  </p>
  </div>
  ';
@@ -18,7 +18,7 @@
              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
              <h4 class="text-center">OCURRIÓ UN ERROR</h4>
              <p class="text-center">
-             No hemos podido eliminar el ticket
+             No hemos podido eliminar 
              </p>
          </div>
          '; 
@@ -31,7 +31,7 @@ if(isset($_POST['encargado']) && isset($_POST['consulta'])){
     $encargado= MysqlQuery::RequestPost('encargado');
     $problema=MysqlQuery::RequestPost('consulta');
 
-    if(MysqlQuery::Guardar("consultas","id_admin,consulta", " '$encargado','$problema'")){
+    if(MysqlQuery::Guardar("problemas","id_admin,consulta", " '$encargado','$problema'")){
         echo '
         <div class="alert alert-danger alert-dismissible fade in col-sm-3 animated bounceInDown" role="alert" style="position:fixed; top:70px; right:10px; z-index:10;"> 
             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
@@ -133,8 +133,8 @@ if(isset($_POST['encargado']) && isset($_POST['consulta'])){
                     $inicio = ($pagina > 1) ? (($pagina * $regpagina) - $regpagina) : 0;
 
                     // Consultar las filas de la tabla 'consultas' paginadas
-                    $selconsultas = mysqli_query( $mysqli,"SELECT SQL_CALC_FOUND_ROWS consultas.*, administrador.nombre_completo AS nombre_admin FROM consultas
-                    INNER JOIN administrador ON consultas.id_admin = administrador.id_admin
+                    $selconsultas = mysqli_query( $mysqli,"SELECT SQL_CALC_FOUND_ROWS problemas.*, administrador.nombre_completo AS nombre_admin FROM problemas
+                    INNER JOIN administrador ON problemas.id_admin = administrador.id_admin
                     LIMIT $inicio, $regpagina");
 
                     $totalregistros = mysqli_query($mysqli, "SELECT FOUND_ROWS()");
@@ -164,7 +164,7 @@ if(isset($_POST['encargado']) && isset($_POST['consulta'])){
                                         <td class="text-center"><?php echo $row['consulta']; ?></td>
                                         <td class="text-center">
                                             <form action="" method="POST" style="display: inline-block;">
-                                                <input type="hidden" name="id_del" value="<?php echo $row['id_consulta']; ?>">
+                                                <input type="hidden" name="id_del" value="<?php echo $row['id_problema']; ?>">
                                                 <button type="submit" class="btn btn-sm btn-danger"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
                                             </form>
                                         </td>

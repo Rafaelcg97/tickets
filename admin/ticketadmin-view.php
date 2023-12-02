@@ -15,7 +15,7 @@
             <?php
                 if(isset($_POST['id_del'])){
                     $id = MysqlQuery::RequestPost('id_del');
-                    if(MysqlQuery::Eliminar("ticket", "id_consulta='$id'")){
+                    if(MysqlQuery::Eliminar("ticket", "id_problema='$id'")){
                         
                         echo '
                             <div class="alert alert-info alert-dismissible fade in col-sm-3 animated bounceInDown" role="alert" style="position:fixed; top:70px; right:10px; z-index:10;"> 
@@ -138,35 +138,35 @@
                                 
                                 if(isset($_GET['ticket'])){
                                     if($_GET['ticket']=="all"){
-                                        $consulta="SELECT SQL_CALC_FOUND_ROWS ticket.*, consultas.*, administrador.nombre_completo AS nombre_admin FROM ticket
-                                        INNER JOIN consultas ON ticket.id_consulta = consultas.id_consulta
-                                        INNER JOIN administrador ON consultas.id_admin = administrador.id_admin
+                                        $consulta="SELECT SQL_CALC_FOUND_ROWS ticket.*, problemas.*, administrador.nombre_completo AS nombre_admin FROM ticket
+                                        INNER JOIN problemas ON ticket.id_problema = problemas.id_problema
+                                        INNER JOIN administrador ON problemas.id_admin = administrador.id_admin
                                         LIMIT $inicio, $regpagina";
                                     }elseif($_GET['ticket']=="pending"){
-                                        $consulta="SELECT SQL_CALC_FOUND_ROWS ticket.*, consultas.*, administrador.nombre_completo AS nombre_admin FROM ticket
-                                        INNER JOIN consultas ON ticket.id_consulta = consultas.id_consulta
-                                        INNER JOIN administrador ON consultas.id_admin = administrador.id_admin
+                                        $consulta="SELECT SQL_CALC_FOUND_ROWS ticket.*, problemas.*, administrador.nombre_completo AS nombre_admin FROM ticket
+                                        INNER JOIN problemas ON ticket.id_problema = problemas.id_problema
+                                        INNER JOIN administrador ON problemas.id_admin = administrador.id_admin
                                         WHERE estado_ticket='Pendiente' LIMIT $inicio, $regpagina";
                                     }elseif($_GET['ticket']=="process"){
-                                        $consulta="SELECT SQL_CALC_FOUND_ROWS ticket.*, consultas.*, administrador.nombre_completo AS nombre_admin FROM ticket
-                                        INNER JOIN consultas ON ticket.id_consulta = consultas.id_consulta
-                                        INNER JOIN administrador ON consultas.id_admin = administrador.id_admin
+                                        $consulta="SELECT SQL_CALC_FOUND_ROWS ticket.*, problemas.*, administrador.nombre_completo AS nombre_admin FROM ticket
+                                        INNER JOIN problemas ON ticket.id_problema = problemas.id_problema
+                                        INNER JOIN administrador ON problemas.id_admin = administrador.id_admin
                                         WHERE  estado_ticket='En proceso' LIMIT $inicio, $regpagina";
                                     }elseif($_GET['ticket']=="resolved"){
-                                        $consulta="SELECT SQL_CALC_FOUND_ROWS ticket.*, consultas.*, administrador.nombre_completo AS nombre_admin FROM ticket
-                                        INNER JOIN consultas ON ticket.id_consulta = consultas.id_consulta
-                                        INNER JOIN administrador ON consultas.id_admin = administrador.id_admin
+                                        $consulta="SELECT SQL_CALC_FOUND_ROWS ticket.*, problemas.*, administrador.nombre_completo AS nombre_admin FROM ticket
+                                        INNER JOIN problemas ON ticket.id_problema = problemas.id_problema
+                                        INNER JOIN administrador ON problemas.id_admin = administrador.id_admin
                                         WHERE estado_ticket='Resuelto' LIMIT $inicio, $regpagina";
                                     }else{
-                                        $consulta="SELECT SQL_CALC_FOUND_ROWS ticket.*, consultas.*, administrador.nombre_completo AS nombre_admin FROM ticket
-                                        INNER JOIN consultas ON ticket.id_consulta = consultas.id_consulta
-                                        INNER JOIN administrador ON consultas.id_admin = administrador.id_admin 
+                                        $consulta="SELECT SQL_CALC_FOUND_ROWS ticket.*, problemas.*, administrador.nombre_completo AS nombre_admin FROM ticket
+                                        INNER JOIN problemas ON ticket.id_problema = problemas.id_problema
+                                        INNER JOIN administrador ON problemas.id_admin = administrador.id_admin 
                                         LIMIT $inicio, $regpagina";
                                     }
                                 }else{
-                                    $consulta="SELECT SQL_CALC_FOUND_ROWS ticket.*, consultas.*, administrador.nombre_completo AS nombre_admin FROM ticket
-                                    INNER JOIN consultas ON ticket.id_consulta = consultas.id_consulta
-                                    INNER JOIN administrador ON consultas.id_admin = administrador.id_admin LIMIT $inicio, $regpagina";
+                                    $consulta="SELECT SQL_CALC_FOUND_ROWS ticket.*, problemas.*, administrador.nombre_completo AS nombre_admin FROM ticket
+                                    INNER JOIN problemas ON ticket.id_problema = problemas.id_problema
+                                    INNER JOIN administrador ON problemas.id_admin = administrador.id_admin LIMIT $inicio, $regpagina";
                                 }
 
 
