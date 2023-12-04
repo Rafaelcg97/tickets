@@ -16,74 +16,85 @@
       $id_ticket="TK".$codigo."N".$numero_filas_total;
       /*Fin codigo numero de ticket*/
 
-      $nombre_ticket= MysqlQuery::RequestPost('name_ticket');
-      $email_ticket=MysqlQuery::RequestPost('email_ticket');
-      $carnet_ticket=MysqlQuery::RequestPost('carnet_ticket');        
-      $mensaje_ticket=MysqlQuery::RequestPost('mensaje_ticket');
-      $estado_ticket="Pendiente";
-      $con=MysqlQuery::RequestPost('id_problema');
-
-
-      if(MysqlQuery::Guardar("ticket","fecha,nombre_usuario,email_cliente,carnet,mensaje,estado_ticket,serie,solucion, id_problema", "NOW(),'$nombre_ticket','$email_ticket','$carnet_ticket','$mensaje_ticket', '$estado_ticket','$id_ticket','','$con'")){
-
-
-        ob_start();
-        ?>
-        <div class="modal fade" id="ticketModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title">TICKET CREADO</h1>
-                    </div>
-                    <div class="modal-body">
-                        <H2>Ticket creado con éxito <br>El TICKET ID es: <strong><?php echo $id_ticket; ?></strong></H2>
-                    </div>
-                    <div class="modal-footer">
-                        <button href="index.php" type="button" class="btn btn-info" data-dismiss="modal">Cerrar</button>
-                        <?php
-                        
-        $email_consul = $email_ticket;
-        $id_colsul = $id_ticket;
-        $consulta_tablaTicket = Mysql::consulta("SELECT ticket.*,problemas.*, administrador.nombre_completo AS nombre_admin FROM ticket INNER JOIN problemas ON ticket.id_problema = problemas.id_problema
-        INNER JOIN administrador ON problemas.id_admin = administrador.id_admin  WHERE serie= '$id_colsul' AND email_cliente='$email_consul'");
-       if(mysqli_num_rows($consulta_tablaTicket) >= 0)
-        {
-          $lsT = mysqli_fetch_array($consulta_tablaTicket, MYSQLI_ASSOC);?>
-          <a id="save" class="btn btn-success" data-id="<?php echo $lsT['serie']; ?>"><span class="glyphicon glyphicon-floppy-disk"></span>&nbsp; Guardar ticket en PDF</a>
-       <?php }?>                
-
+          $nombre_ticket= MysqlQuery::RequestPost('name_ticket');
+          $email_ticket=MysqlQuery::RequestPost('email_ticket');
+          $carnet_ticket=MysqlQuery::RequestPost('carnet_ticket');        
+          $mensaje_ticket=MysqlQuery::RequestPost('mensaje_ticket');
+          $estado_ticket="Pendiente";
+          $con=MysqlQuery::RequestPost('id_problema');
+  
+          if(MysqlQuery::Guardar("ticket","fecha,nombre_usuario,email_cliente,carnet,mensaje,estado_ticket,serie,solucion, id_problema", "NOW(),'$nombre_ticket','$email_ticket','$carnet_ticket','$mensaje_ticket', '$estado_ticket','$id_ticket','','$con'")){
+  
+            $updateTimeQuery = MysqlQuery::Actualizar("limite","last_ticket_created_time= NOW()","ID='1'");
+            ?>
+            <div class="modal fade" id="ticketModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title">TICKET CREADO</h1>
+                        </div>
+                        <div class="modal-body">
+                            <H2>Ticket creado con éxito <br>El TICKET ID es: <strong><?php echo $id_ticket; ?></strong></H2>
+                        </div>
+                        <div class="modal-footer">
+                            <button href="index.php" type="button" class="btn btn-info" data-dismiss="modal">Cerrar</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <script>
-            $(document).ready(function() {
-                $('#ticketModal').modal('show');
-            }); 
-        </script>
-           <script>
-            $(document).ready(function () {
-                    $("a#save").click(function () {
-                        // Cambiado de window.open a redirección de página para abrir el PDF en una nueva pestaña
-                        window.open("./lib/pdf_user.php?id=" + $(this).attr("data-id"));
-                    });
+            <script>
+                $(document).ready(function() {
+                    $('#ticketModal').modal('show');
                 });
-    </script>
+            </script>
 <?php
-ob_end_flush();
-      }else{
-        echo '
-            <div class="alert alert-danger alert-dismissible fade in col-sm-3 animated bounceInDown" role="alert" style="position:fixed; top:70px; right:10px; z-index:10;"> 
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                <h4 class="text-center">OCURRIÓ UN ERROR</h4>
-                <p class="text-center">
-                    No hemos podido crear el ticket. Por favor intente nuevamente.
-                </p>
-            </div>
-        ';
-      }
-    }
+  
+          }else{
+            echo '
+                <div class="alert alert-danger alert-dismissible fade in col-sm-3 animated bounceInDown" role="alert" style="position:fixed; top:70px; right:10px; z-index:10;"> 
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h4 class="text-center">OCURRIÓ UN ERROR</h4>
+                    <p class="text-center">
+                        No hemos podido crear el ticket. Por favor intente nuevamente.
+                    </p>
+                </div>
+            ';
+          }
+        }
+    }elseif($contador>=$lmt){
+      echo '
+      <div class="alert alert-danger alert-dismissible fade in col-sm-3 animated bounceInDown" role="alert" style="position:fixed; top:70px; right:10px; z-index:10;"> 
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+          <h4 class="text-center">OCURRIÓ UN ERROR</h4>
+          <p class="text-center">
+              Limite de tickets
+          </p>
+      </div>
+    ';
+    }elseif($current_time - $lastTicketTime <= $intervalo_minutos){
+      echo '
+      <div class="alert alert-danger alert-dismissible fade in col-sm-3 animated bounceInDown" role="alert" style="position:fixed; top:70px; right:10px; z-index:10;"> 
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+          <h4 class="text-center"></h4>
+          <p class="text-center">
+              Espere  '.$tiempo.' minutos para generar otro ticket
+          </p>
+      </div>
+    ';
+    }    
+  } else {
+    echo '
+    <div class="alert alert-danger alert-dismissible fade in col-sm-3 animated bounceInDown" role="alert" style="position:fixed; top:70px; right:10px; z-index:10;"> 
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+        <h4 class="text-center"></h4>
+        <p class="text-center">
+        La generación de tickets solo está permitida entre las 8 AM y las 12 PM, y de 1 PM a 5 PM.
+        </p>
+    </div>
+  ';
+  }
+
   ?>
           <div class="container">
             <div class="row well">
