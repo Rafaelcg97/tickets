@@ -17,7 +17,7 @@
                     </a>
                     <ul class="dropdown-menu">
                         <!-- admins -->
-                        <?php if($_SESSION['tipo']=="admin"): ?>
+                        <?php if($_SESSION['tipo']=="admin" and $_SESSION['id'] == 1): ?>
                         <li>
                             <a href="admin.php?view=ticketadmin"><span class="glyphicon glyphicon-envelope"></span> &nbsp; Administrar Tickets</a>
                         </li>
@@ -30,9 +30,23 @@
                         <li>
                             <a href="admin.php?view=config"><i class="fa fa-cogs"></i> &nbsp; Configuracion</a>
                         </li>
-                        <?php endif; ?> 
                         <li class="divider"></li>
                         <li ><a href="./process/logout.php"><i class="fa fa-power-off"></i>&nbsp;&nbsp;Cerrar sesión</a></li>
+                        <?php endif; ?> 
+
+                        
+                        <!-- encargados -->
+                        <?php if($_SESSION['tipo']=="admin" and $_SESSION['id'] != 1): ?>
+                        <li>
+                            <a href="admin.php?view=ticketadmin"><span class="glyphicon glyphicon-envelope"></span> &nbsp; Administrar Tickets</a>
+                        </li>
+                        <li>
+                            <a href="admin.php?view=config"><i class="fa fa-cogs"></i> &nbsp; Configuracion</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li ><a href="./process/logout.php"><i class="fa fa-power-off"></i>&nbsp;&nbsp;Cerrar sesión</a></li>
+                        <?php endif; ?> 
+
                     </ul>
                 </li>
             </ul>
