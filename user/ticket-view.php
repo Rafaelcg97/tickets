@@ -16,85 +16,62 @@
       $id_ticket="TK".$codigo."N".$numero_filas_total;
       /*Fin codigo numero de ticket*/
 
-          $nombre_ticket= MysqlQuery::RequestPost('name_ticket');
-          $email_ticket=MysqlQuery::RequestPost('email_ticket');
-          $carnet_ticket=MysqlQuery::RequestPost('carnet_ticket');        
-          $mensaje_ticket=MysqlQuery::RequestPost('mensaje_ticket');
-          $estado_ticket="Pendiente";
-          $con=MysqlQuery::RequestPost('id_problema');
-  
-          if(MysqlQuery::Guardar("ticket","fecha,nombre_usuario,email_cliente,carnet,mensaje,estado_ticket,serie,solucion, id_problema", "NOW(),'$nombre_ticket','$email_ticket','$carnet_ticket','$mensaje_ticket', '$estado_ticket','$id_ticket','','$con'")){
-  
-            $updateTimeQuery = MysqlQuery::Actualizar("limite","last_ticket_created_time= NOW()","ID='1'");
-            ?>
-            <div class="modal fade" id="ticketModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title">TICKET CREADO</h1>
-                        </div>
-                        <div class="modal-body">
-                            <H2>Ticket creado con éxito <br>El TICKET ID es: <strong><?php echo $id_ticket; ?></strong></H2>
-                        </div>
-                        <div class="modal-footer">
-                            <button href="index.php" type="button" class="btn btn-info" data-dismiss="modal">Cerrar</button>
-                        </div>
-                    </div>
-                </div>
+      $nombre_ticket= MysqlQuery::RequestPost('name_ticket');
+      $email_ticket=MysqlQuery::RequestPost('email_ticket');
+      $carnet_ticket=MysqlQuery::RequestPost('carnet_ticket');        
+      $mensaje_ticket=MysqlQuery::RequestPost('mensaje_ticket');
+      $estado_ticket="Pendiente";
+      $con=MysqlQuery::RequestPost('id_problema');
+
+
+      if(MysqlQuery::Guardar("ticket","fecha,nombre_usuario,email_cliente,carnet,mensaje,estado_ticket,serie,solucion, id_problema", "NOW(),'$nombre_ticket','$email_ticket','$carnet_ticket','$mensaje_ticket', '$estado_ticket','$id_ticket','','$con'")){
+        ob_start();
+       ?>
+        
+<div class="modal fade" id="ticketModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title">TICKET CREADO</h1>
             </div>
-
-            <script>
-                $(document).ready(function() {
-                    $('#ticketModal').modal('show');
-                });
-            </script>
-<?php
-  
-          }else{
-            echo '
-                <div class="alert alert-danger alert-dismissible fade in col-sm-3 animated bounceInDown" role="alert" style="position:fixed; top:70px; right:10px; z-index:10;"> 
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    <h4 class="text-center">OCURRIÓ UN ERROR</h4>
-                    <p class="text-center">
-                        No hemos podido crear el ticket. Por favor intente nuevamente.
-                    </p>
-                </div>
-            ';
-          }
-        }
-    }elseif($contador>=$lmt){
-      echo '
-      <div class="alert alert-danger alert-dismissible fade in col-sm-3 animated bounceInDown" role="alert" style="position:fixed; top:70px; right:10px; z-index:10;"> 
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-          <h4 class="text-center">OCURRIÓ UN ERROR</h4>
-          <p class="text-center">
-              Limite de tickets
-          </p>
-      </div>
-    ';
-    }elseif($current_time - $lastTicketTime <= $intervalo_minutos){
-      echo '
-      <div class="alert alert-danger alert-dismissible fade in col-sm-3 animated bounceInDown" role="alert" style="position:fixed; top:70px; right:10px; z-index:10;"> 
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-          <h4 class="text-center"></h4>
-          <p class="text-center">
-              Espere  '.$tiempo.' minutos para generar otro ticket
-          </p>
-      </div>
-    ';
-    }    
-  } else {
-    echo '
-    <div class="alert alert-danger alert-dismissible fade in col-sm-3 animated bounceInDown" role="alert" style="position:fixed; top:70px; right:10px; z-index:10;"> 
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-        <h4 class="text-center"></h4>
-        <p class="text-center">
-        La generación de tickets solo está permitida entre las 8 AM y las 12 PM, y de 1 PM a 5 PM.
-        </p>
+            <div class="modal-body">
+                <H2>Ticket creado con éxito <br>El TICKET ID es: <strong><?php echo $id_ticket; ?></strong></H2>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" data-dismiss="modal">Cerrar</button>
+                <button name="save" id="save" class="btn btn-sm btn-success"><i class="fa fa-print" aria-hidden="true"></i> Guardar ticket en PDF</button>            </div>
+        </div>
     </div>
-  ';
-  }
+</div>
 
+<script>
+    $(document).ready(function() {
+        $('#ticketModal').modal('show');
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("button#save").click(function () {
+            window.open("./lib/pdf_user.php?id=" + "<?php echo $id_ticket; ?>");
+        });
+    });
+</script>
+
+<?php
+ob_end_flush();
+      }else{
+        echo '
+            <div class="alert alert-danger alert-dismissible fade in col-sm-3 animated bounceInDown" role="alert" style="position:fixed; top:70px; right:10px; z-index:10;"> 
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="text-center">OCURRIÓ UN ERROR</h4>
+                <p class="text-center">
+                    No hemos podido crear el ticket. Por favor intente nuevamente.
+                </p>
+            </div>
+        ';
+      }
+    }
   ?>
           <div class="container">
             <div class="row well">
@@ -193,7 +170,7 @@
 
                           <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-10">
-                              <button type="submit" class="btn btn-info" href="./index-view.php">Crear </button>
+                            <button type="submit" class="btn btn-info" data-toggle="modal" data-target="#ticketModal">Crear </button>
                             </div>
                           </div>
                           
