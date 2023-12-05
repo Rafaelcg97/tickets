@@ -8,8 +8,9 @@
         $pass_save=md5(MysqlQuery::RequestPost('admin_clave_reg'));
         $email_save=MysqlQuery::RequestPost('admin_email_reg');
         $tickets_permitidos=MysqlQuery::RequestPost('admin_tickets');
+        $estado_new="activo";
 
-       if(MysqlQuery::Guardar("administrador", "nombre_completo, nombre_admin, clave, email_admin, tickets_permitidos", "'$nom_complete_save', '$nom_admin_save', '$pass_save', '$email_save', '$tickets_permitidos'")){
+       if(MysqlQuery::Guardar("administrador", "nombre_completo, nombre_admin, clave, email_admin, tickets_permitidos, estado", "'$nom_complete_save', '$nom_admin_save', '$pass_save', '$email_save', '$tickets_permitidos', '$estado_new'")){
            echo '
                 <div class="alert alert-info alert-dismissible fade in col-sm-3 animated bounceInDown" role="alert" style="position:fixed; top:70px; right:10px; z-index:10;"> 
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
@@ -44,10 +45,14 @@
             $pass_admin_update=md5(MysqlQuery::RequestPost('admin_clave_up'));
             $old_pass_admin_uptade=md5(MysqlQuery::RequestPost('old_admin_clave_up'));
             $email_admin_update=MysqlQuery::RequestPost('admin_email_up');
+            $estado="activo";
+           
+            
 
+            
             $sql=Mysql::consulta("SELECT * FROM administrador WHERE nombre_admin= '$old_nom_admin_update' AND clave='$old_pass_admin_uptade'");
             if(mysqli_num_rows($sql)>=1){
-                if(MysqlQuery::Actualizar("administrador", "nombre_completo='$nom_complete_update', nombre_admin='$nom_admin_update', clave='$pass_admin_update', email_admin='$email_admin_update'", "nombre_admin='$old_nom_admin_update' and clave='$old_pass_admin_uptade'")){
+                if(MysqlQuery::Actualizar("administrador", "nombre_completo='$nom_complete_update', nombre_admin='$nom_admin_update', clave='$pass_admin_update', email_admin='$email_admin_update', estado='$estado'", "nombre_admin='$old_nom_admin_update' and clave='$old_pass_admin_uptade'") and $_SESSION['id'] == 1){
                     $_SESSION['nombre']=$nom_admin_update;
                     $_SESSION['clave']=$pass_admin_update;
                     echo '
@@ -59,7 +64,20 @@
                             </p>
                         </div>
                     ';
-                }else{
+                }elseif(MysqlQuery::Actualizar("administrador", "nombre_completo='$nom_complete_update', nombre_admin='$nom_admin_update', clave='$pass_admin_update', email_admin='$email_admin_update',estado='$estado'", "nombre_admin='$old_nom_admin_update' and clave='$old_pass_admin_uptade'")){
+                  $_SESSION['nombre']=$nom_admin_update;
+                  $_SESSION['clave']=$pass_admin_update;
+                  echo '
+                      <div class="alert alert-info alert-dismissible fade in col-sm-3 animated bounceInDown" role="alert" style="position:fixed; top:70px; right:10px; z-index:10;"> 
+                          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                          <h4 class="text-center">ADMINISTRADOR ACTUALIZADO</h4>
+                          <p class="text-center">
+                              El administrador se actualizo con exito
+                          </p>
+                      </div>
+                  '; 
+                }
+                else{
                     echo '
                         <div class="alert alert-danger alert-dismissible fade in col-sm-3 animated bounceInDown" role="alert" style="position:fixed; top:70px; right:10px; z-index:10;"> 
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
@@ -83,7 +101,7 @@
            }
         }
         
-        /*Script para eliminar cuenta*/
+        /* para eliminar cuenta*/
          if(isset($_POST['nom_admin_delete']) && isset($_POST['admin_clave__delete'])){
              $nom_admin_delete=MysqlQuery::RequestPost('nom_admin_delete');
              $clave_admin_delete=md5(MysqlQuery::RequestPost('admin_clave__delete'));
@@ -125,9 +143,11 @@
             </div>
           </div><!--fin row-->
           
-          <br><br>        
-          
-          <div class="row">
+          <br><br> 
+           <?php
+                    if ($_SESSION['id'] == 1) 
+                    {?>
+                              <div class="row">
               <di class="col-sm-8">
                   <div class="row">
                       <div class="col-sm-12">
@@ -161,7 +181,12 @@
                         </div>
                       </div>
                     </div>  
-                  </div><!--Fin row 1 agregar-->
+                  </div>
+                    <?php
+                    }
+          ?>
+          
+<!--Fin row 1 agregar
                   
                   <div class="row"> 
                       <div class="col-sm-12">
@@ -201,7 +226,7 @@
                           </div>
                         </div>
                       </div> 
-                  </div><!--Fin row 2 eliminar-->
+                  </div>--><!--Fin row 2 eliminar-->
               </di><!--Fin class col-md-8-->
               
               <div class="col-sm-4">
@@ -240,7 +265,22 @@
                              <div class="form-group">
                                <label><i class="fa fa-envelope"></i>&nbsp;Email</label>
                                <input type="email" class="form-control" value="<?php echo $reg1['email_admin']; ?>" name="admin_email_up"  placeholder="Email administrador" required="">
-                             </div><button type="submit" class="btn btn-info">Actualizar datos</button>
+                             </div>
+                             <?php
+                    if ($_SESSION['id'] == 1) 
+                    {?>
+
+                             <div class="form-group">
+                             <label><i class="fa fa-envelope"></i>&nbsp;Estado</label>
+                               <select class="form-control" name="estado_ad">
+                               <option value="activo">activo</option>
+                               <option value="Deshabilitado">Deshabilitado</option>
+                              </SELECT>
+                              </div>
+                    <?php
+                    }
+          ?>
+                             <button type="submit" class="btn btn-info">Actualizar datos</button>
                            </form>
                          </div>
                        </div>
