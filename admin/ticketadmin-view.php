@@ -15,7 +15,7 @@
             <?php
                 if(isset($_POST['id_del'])){
                     $id = MysqlQuery::RequestPost('id_del');
-                    if(MysqlQuery::Eliminar("ticket", "id_problema='$id'")){
+                    if(MysqlQuery::Eliminar("ticket", "id='$id'")){
                         
                         echo '
                             <div class="alert alert-info alert-dismissible fade in col-sm-3 animated bounceInDown" role="alert" style="position:fixed; top:70px; right:10px; z-index:10;"> 
@@ -57,7 +57,7 @@
 
 
                 
-                /* Limite de tickets*/ 
+                /* Limite de tickets
                 $num_limt = Mysql::consulta("SELECT limite_ FROM limite WHERE ID='1'");
                 $row_num_limt = $num_limt->fetch_assoc();
                 $num_limt=(int)$row_num_limt['limite_'] ?? null;
@@ -86,7 +86,7 @@
                             MysqlQuery::guardar("limite", "ID,limite_", "'1','5'");
                         }
                     }
-                }
+                }*/
                 
 
             ?> 
@@ -118,9 +118,7 @@
                             <li><a href="./admin.php?view=ticketadmin&ticket=all"><i class="fa fa-list"></i>&nbsp;&nbsp;Todos los tickets&nbsp;&nbsp;<span class="badge"><?php echo $num_total_all; ?></span></a></li>
                             <li><a href="./admin.php?view=ticketadmin&ticket=pending"><i class="fa fa-envelope"></i>&nbsp;&nbsp;Tickets pendientes&nbsp;&nbsp;<span class="badge"><?php echo $num_total_pend; ?></span></a></li>
                             <li><a href="./admin.php?view=ticketadmin&ticket=process"><i class="fa fa-folder-open"></i>&nbsp;&nbsp;Tickets en proceso&nbsp;&nbsp;<span class="badge"><?php echo $num_total_proceso; ?></span></a></li>
-                            <li><a href="./admin.php?view=ticketadmin&ticket=resolved"><i class="fa fa-thumbs-o-up"></i>&nbsp;&nbsp;Tickets resueltos&nbsp;&nbsp;<span class="badge"><?php echo $num_total_res; ?></span></a></li>
-                            <li><a href="#!" data-toggle="modal" data-target="#cont"><span class="fa fa-stop-circle-o"></span>&nbsp;&nbsp;Limite de tickets<span class="badge"><?php echo $num_limt; ?></a></li>
-                        </ul>
+                            <li><a href="./admin.php?view=ticketadmin&ticket=resolved"><i class="fa fa-thumbs-o-up"></i>&nbsp;&nbsp;Tickets resueltos&nbsp;&nbsp;<span class="badge"><?php echo $num_total_res; ?></span></a></li>                        </ul>
                     </div>
                 </div>
                 <br>
@@ -192,6 +190,8 @@
                                         <th class="text-center">Email</th>
                                         <th class="text-center">Carnet</th>
                                         <th class="text-center">encargado</th>
+                                        <th class="text-center">cita</th>
+                                        <th class="text-center ">Fecha de resolucion</th>
                                         <th class="text-center">Opciones</th>
                                     </tr>
                                 </thead>
@@ -210,6 +210,8 @@
                                         <td class="text-center"><?php echo $row['email_cliente']; ?></td>
                                         <td class="text-center"><?php echo $row['carnet']; ?></td>
                                         <td class="text-center"><?php echo $row['nombre_admin']; ?></td>
+                                        <td class="text-center"><?php echo $row['hora_cita']; ?></td>
+                                        <td class="text-center"><?php echo $row['fecha_resolucion']; ?></td>
                                         <td class="text-center">
                                             <a href="./lib/pdf.php?id=<?php echo $row['id']; ?>" class="btn btn-sm btn-success" target="_blank"><i class="fa fa-print" aria-hidden="true"></i></a>
 

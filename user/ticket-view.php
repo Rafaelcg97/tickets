@@ -2,19 +2,27 @@
     if(isset($_POST['fecha_ticket']) && isset($_POST['name_ticket']) && isset($_POST['email_ticket'])){
 
 
-      /*Este codigo nos servira para generar un numero diferente para cada ticket*/
-      $codigo = ""; 
-      $longitud = 2; 
-      for ($i=1; $i<=$longitud; $i++){ 
-        $numero = rand(0,9); 
-        $codigo .= $numero; 
-      } 
-      $num=Mysql::consulta("SELECT id FROM ticket");
-      $numero_filas = mysqli_num_rows($num);
+// Este código nos servirá para generar un número diferente para cada ticket
+$queryUltimoNumero = Mysql::consulta("SELECT MAX(id) AS ultimo_numero FROM ticket");
+$ultimoNumero = mysqli_fetch_assoc($queryUltimoNumero)['ultimo_numero'];
+$ultimoNumero = ($ultimoNumero) ? $ultimoNumero : 0;
 
-      $numero_filas_total=$numero_filas+1;
-      $id_ticket="TK".$codigo."N".$numero_filas_total;
-      /*Fin codigo numero de ticket*/
+// Incrementa el contador para el próximo ticket
+$nuevoNumeroCorrelativo = $ultimoNumero + 1;
+
+// Si el contador supera los 999999, reinicia a 1
+if ($nuevoNumeroCorrelativo > 9999999) {
+    $nuevoNumeroCorrelativo = 1;
+}
+
+// Genera el nuevo código de ticket
+$codigo = str_pad($nuevoNumeroCorrelativo, 6, '0', STR_PAD_LEFT);  // Asegura que el número tenga 6 dígitos, puedes ajustar según sea necesario
+
+// Actualiza el contador en la base de datos
+MysqlQuery::Actualizar("limite", "ultimo_numero='$nuevoNumeroCorrelativo'", "ID='1'");
+
+// Crea el ID del ticket
+$id_ticket = "TK" . $codigo;
 
       $nombre_ticket= MysqlQuery::RequestPost('name_ticket');
       $email_ticket=MysqlQuery::RequestPost('email_ticket');
@@ -53,7 +61,11 @@
 <script>
     $(document).ready(function () {
         $("button#save").click(function () {
-            window.open("./lib/pdf_user.php?id=" + "<?php echo $id_ticket; ?>");
+            var idTicket = "<?php echo $id_ticket; ?>";
+            var emailTicket = "<?php echo $email_ticket; ?>";
+            
+            // Utilizando window.open para abrir dos ventanas a la vez
+            window.open("./lib/pdf_user.php?id=" + idTicket);
         });
     });
 </script>
