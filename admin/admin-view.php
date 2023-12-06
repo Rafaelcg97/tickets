@@ -3,8 +3,9 @@
 if (isset($_POST['admin_id_encargado'])) {
     $id_ad=MysqlQuery::RequestPost('admin_id_encargado');
     $id_ad_nuevo = MysqlQuery::RequestPost('admin_id_nuevo_encargado');
+
     if (MysqlQuery::Actualizar("administrador", "estado='deshabilitado'", "id_admin='$id_ad'")) {
-        MysqlQuery::Actualizar("problemas", "id_admin='$id_ad_nuevo'", "id_admin='$id_ad'");
+
         echo '
                     <div class="alert alert-info alert-dismissible fade in col-sm-3 animated bounceInDown" role="alert" style="position:fixed; top:70px; right:10px; z-index:10;"> 
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>

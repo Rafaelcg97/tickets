@@ -160,7 +160,7 @@ ob_end_flush();
                               <select class="form-control" name="id_problema" required="">
                                 <?php
                                 // 
-                                $query_consul = Mysql::consulta("SELECT id_problema, consulta FROM problemas WHERE id_admin != 1 AND id_admin != '$idA'");
+                                $query_consul = Mysql::consulta("SELECT problemas.id_problema, problemas.consulta FROM problemas INNER JOIN administrador ON problemas.id_admin=administrador.id_admin WHERE problemas.id_admin != 1 AND problemas.id_admin != '$idA' and administrador.estado='activo'");
                                  if ($query_consul) {
                                   while ($consul = mysqli_fetch_assoc($query_consul)) {
                                     $idcons = $consul['id_problema'];
