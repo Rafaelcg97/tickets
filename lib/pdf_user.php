@@ -46,6 +46,8 @@ $pdf->Cell (35,10,'Email',1,0,'C',true);
 $pdf->Cell (0,10,utf8_decode($reg['email_cliente']),1,1,'L');
 $pdf->Cell (35,15,'Problema',1,0,'C',true);
 $pdf->Cell (0,15,utf8_decode($reg['consulta']),1,1,'L');
+$pdf->Cell (35,15,'cita',1,0,'C',true);
+$pdf->Cell (0,15,utf8_decode($reg['hora_cita']),1,1,'L');
 $pdf->Cell (35,15,'Solucion',1,0,'C',true);
 $pdf->Cell (0,15,utf8_decode($reg['solucion']),1,1,'L');
 

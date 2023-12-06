@@ -7,7 +7,8 @@ if (isset($_POST['admin_id_nuevo_encargado'])) {
     // Obtener el límite de tickets del administrador actual
     $num_ = Mysql::consulta("SELECT tickets_permitidos FROM administrador WHERE id_admin='$id_admin'");
     $row = mysqli_fetch_assoc($num_);
-    $tic_actual = $row['tickets_permitidos'];
+    if ($row) {  // Verifica si se encontraron datos
+        $tic_actual = $row['tickets_permitidos'];}
 
     // Actualizar datos del administrador actual
     if (MysqlQuery::Actualizar("administrador", "tickets_permitidos=0, estado='deshabilitado'", "id_admin='$id_admin'")) {
@@ -17,8 +18,7 @@ if (isset($_POST['admin_id_nuevo_encargado'])) {
         $tic_nuevo = $rowNuevo['tickets_permitidos'];
 
         // Actualizar datos del nuevo administrador
-        if (MysqlQuery::Actualizar("administrador", "tickets_permitidos='$tic_nuevo' + '$tic_actual'", "id_admin='$adminNuevo'") &&
-            MysqlQuery::Actualizar("problemas", "id_admin='$adminNuevo'", "id_admin='$id_admin'")
+        if (MysqlQuery::Actualizar("administrador", "tickets_permitidos='$tic_nuevo' + '$tic_actual'", "id_admin='$adminNuevo'")
         ) {
             echo '
                 <div class="alert alert-info alert-dismissible fade in col-sm-3 animated bounceInDown" role="alert" style="position:fixed; top:70px; right:10px; z-index:10;"> 
@@ -138,10 +138,8 @@ if (isset($_POST['admin_id_nuevo_encargado'])) {
             <form action="" method="POST" style="margin: 20px;">
             <div class="form-group">
                     <label><span class="glyphicon glyphicon-info-sign"></span>&nbsp;Selecciona nuevo encargado</label>
-                    <input type="hidden" id="admin_id_nuevo_encargado" name="admin_id_nuevo_encargado">
                     <select class="form-control" name="nuevo_encargado" id="nuevo_encargado" required>
                         <?php
-                        $id_ad=MysqlQuery::RequestPost('admin_id');
                         // Obtener la lista de administradores activos (id diferente de 1)
                         $query = Mysql::consulta("SELECT id_admin, nombre_completo, tickets_permitidos FROM administrador WHERE estado='activo' AND id_admin!='1'  ");
                         if ($query)
@@ -215,7 +213,7 @@ if (isset($_POST['admin_id_nuevo_encargado'])) {
                                         <td class="text-center"><?php echo $row['tickets_permitidos']; ?></td>
                                         <td class="text-center"><?php echo $row['estado']; ?></td>
                                         <td class="text-center">
-                                        <a href="#desactivarAdminModal" data-toggle="modal" data-target="#desactivarAdminModal" data-id="<?php echo $row['id_admin']; ?>" class="btn btn-sm btn-warning open-modal"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+                                        <a href="#desactivarAdminModal" data-toggle="modal" data-target="#desactivarAdminModal" data-id="<?php echo $row['id_admin']; ?>" class="btn btn-sm btn-warning disable-admin-modal"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
                                         <a href="#cont" data-toggle="modal" data-target="#cont" data-id="<?php echo $row['id_admin']; ?>" class="btn btn-sm btn-info open-modal"><i class="fa fa-plus-square" aria-hidden="true"></i></a></td>
                                     </tr>
                                     <?php
