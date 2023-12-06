@@ -86,7 +86,7 @@ if(isset($_POST['encargado']) && isset($_POST['consulta'])){
                             <select class="form-control" name="encargado" required="">
     <?php
     // Obtener la lista de administradores
-    $query_admins = Mysql::consulta("SELECT id_admin, nombre_completo FROM administrador WHERE id_admin != 1 AND id_admin != '$idA'");
+    $query_admins = Mysql::consulta("SELECT id_admin, nombre_completo FROM administrador WHERE id_admin != 1 AND id_admin != '$idA' and estado !='deshabilitado'");
     
     if ($query_admins) {
         while ($admin = mysqli_fetch_assoc($query_admins)) {

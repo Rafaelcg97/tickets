@@ -8,7 +8,7 @@
 		$mensaje_mail=wordwrap($mensaje_mail, 70, "\r\n");
 
 
-		if(MysqlQuery::Actualizar("ticket", "estado_ticket='$estado_edit', solucion='$solucion_edit'", "id='$id_edit'")){
+		if(MysqlQuery::Actualizar("ticket", "estado_ticket='$estado_edit', solucion='$solucion_edit',fecha_resolucion= NOW()", "id='$id_edit'")){
 
 			echo '
                 <div class="alert alert-info alert-dismissible fade in col-sm-3 animated bounceInDown" role="alert" style="position:fixed; top:70px; right:10px; z-index:10;"> 

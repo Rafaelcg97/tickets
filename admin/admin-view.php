@@ -1,46 +1,31 @@
 <?php if($_SESSION['nombre']!="" && $_SESSION['tipo']=="admin"){ ?>    
         <?php
-if (isset($_POST['admin_id_nuevo_encargado'])) {
-    $adminNuevo = MysqlQuery::RequestPost('admin_id_nuevo_encargado');
-    $id_admin = MysqlQuery::RequestPost('admin_id');
-
-    // Obtener el límite de tickets del administrador actual
-    $num_ = Mysql::consulta("SELECT tickets_permitidos FROM administrador WHERE id_admin='$id_admin'");
-    $row = mysqli_fetch_assoc($num_);
-    if ($row) {  // Verifica si se encontraron datos
-        $tic_actual = $row['tickets_permitidos'];}
-
-    // Actualizar datos del administrador actual
-    if (MysqlQuery::Actualizar("administrador", "tickets_permitidos=0, estado='deshabilitado'", "id_admin='$id_admin'")) {
-        // Obtener el límite de tickets del nuevo administrador
-        $numNuevo = Mysql::consulta("SELECT tickets_permitidos FROM administrador WHERE id_admin='$adminNuevo'");
-        $rowNuevo = mysqli_fetch_assoc($numNuevo);
-        $tic_nuevo = $rowNuevo['tickets_permitidos'];
-
-        // Actualizar datos del nuevo administrador
-        if (MysqlQuery::Actualizar("administrador", "tickets_permitidos='$tic_nuevo' + '$tic_actual'", "id_admin='$adminNuevo'")
-        ) {
-            echo '
-                <div class="alert alert-info alert-dismissible fade in col-sm-3 animated bounceInDown" role="alert" style="position:fixed; top:70px; right:10px; z-index:10;"> 
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    <h4 class="text-center">ADMINISTRADOR ELIMINADO</h4>
-                    <p class="text-center">
-                        El administrador fue eliminado del sistema con éxito(trabajando)
-                    </p>
-                </div>
-            ';
-        } else {
-            echo '
-                <div class="alert alert-danger alert-dismissible fade in col-sm-3 animated bounceInDown" role="alert" style="position:fixed; top:70px; right:10px; z-index:10;"> 
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    <h4 class="text-center">OCURRIÓ UN ERROR</h4>
-                    <p class="text-center">
-                        No hemos podido eliminar el administrador
-                    </p>
-                </div>
-            ';
-        }
-        }
+if (isset($_POST['admin_id_encargado'])) {
+    $id_ad=MysqlQuery::RequestPost('admin_id_encargado');
+    $id_ad_nuevo = MysqlQuery::RequestPost('admin_id_nuevo_encargado');
+    if (MysqlQuery::Actualizar("administrador", "estado='deshabilitado'", "id_admin='$id_ad'")) {
+        MysqlQuery::Actualizar("problemas", "id_admin='$id_ad_nuevo'", "id_admin='$id_ad'");
+        echo '
+                    <div class="alert alert-info alert-dismissible fade in col-sm-3 animated bounceInDown" role="alert" style="position:fixed; top:70px; right:10px; z-index:10;"> 
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        <h4 class="text-center">ADMINISTRADOR ELIMINADO</h4>
+                        <p class="text-center">
+                           El administrador fue eliminado del sistema con éxito (trabajando)
+                        </p>
+                    </div>
+                ';
+               
+    }else {
+        echo '
+            <div class="alert alert-danger alert-dismissible fade in col-sm-3 animated bounceInDown" role="alert" style="position:fixed; top:70px; right:10px; z-index:10;"> 
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="text-center">OCURRIÓ UN ERROR</h4>
+                <p class="text-center">
+                    No hemos podido eliminar el administrador
+                </p>
+            </div>
+        ';
+    }
             }elseif(isset($_POST['id_tick']) ){
                 $id_tic=MysqlQuery::RequestPost('id_tick');
                 $id_ad=MysqlQuery::RequestPost('admin_id');
@@ -136,33 +121,36 @@ if (isset($_POST['admin_id_nuevo_encargado'])) {
                 <h4 class="modal-title text-center text-primary" id="myModalLabel1">Deshabilitar administrador</h4>
             </div>
             <form action="" method="POST" style="margin: 20px;">
-            <div class="form-group">
-                    <label><span class="glyphicon glyphicon-info-sign"></span>&nbsp;Selecciona nuevo encargado</label>
-                    <select class="form-control" name="nuevo_encargado" id="nuevo_encargado" required>
-                        <?php
-                        // Obtener la lista de administradores activos (id diferente de 1)
-                        $query = Mysql::consulta("SELECT id_admin, nombre_completo, tickets_permitidos FROM administrador WHERE estado='activo' AND id_admin!='1'  ");
-                        if ($query)
-                        {
-                            while ($consul = mysqli_fetch_assoc($query)) {
-                                $idc = $consul['id_admin'];
-                                $nom = $consul['nombre_completo'];
-                                $tic_n=$consul['tickets_permitidos'];
-                                $selected = ($idc == $adminNuevo) ? 'selected' : '';
-                                echo '<option value="' . $idc . '" ' . $selected . '>' . $nom . '</option>';
-                            }
-                            mysqli_free_result($query); 
-                        }else {
-                            echo '<option value="" disabled>No hay administradores disponibles</option>';
-                          }
-                        ?>
-                    </select>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-danger btn-sm">Deshabilitar</button>
-                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancelar</button>
-                </div>
-            </form>
+    <div class="form-group">
+        <input type="hidden" id="admin_id_encargado" name="admin_id_encargado" value="">
+        <label><span class="glyphicon glyphicon-info-sign"></span>&nbsp;Selecciona nuevo encargado</label>
+
+        <!-- Cambiado el nombre del campo oculto a admin_id_nuevo_encargado -->
+        <select class="form-control" name="admin_id_nuevo_encargado" required>
+            <?php
+            $id_ad = MysqlQuery::RequestPost('admin_id');
+            $id_123=MysqlQuery::RequestPost('admin_id_encargado');
+            // Obtener la lista de administradores activos (id diferente de 1)
+            $query = Mysql::consulta("SELECT id_admin, nombre_completo FROM administrador WHERE estado='activo' AND id_admin!='1' ");
+            if ($query) {
+                while ($consul = mysqli_fetch_assoc($query)) {
+                    $idc = $consul['id_admin'];
+                    $nom = $consul['nombre_completo'];
+                    echo '<option value="' . $idc . '">' . $nom . '</option>';
+                    
+                }
+                mysqli_free_result($query);
+            } else {
+                echo '<option value="" disabled>No hay administradores disponibles</option>';
+            }
+            ?>
+        </select>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-danger btn-sm">Deshabilitar</button>
+        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancelar</button>
+    </div>
+</form>
         </div>
     </div>
 </div>
@@ -213,7 +201,7 @@ if (isset($_POST['admin_id_nuevo_encargado'])) {
                                         <td class="text-center"><?php echo $row['tickets_permitidos']; ?></td>
                                         <td class="text-center"><?php echo $row['estado']; ?></td>
                                         <td class="text-center">
-                                        <a href="#desactivarAdminModal" data-toggle="modal" data-target="#desactivarAdminModal" data-id="<?php echo $row['id_admin']; ?>" class="btn btn-sm btn-warning disable-admin-modal"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+                                        <a href="#desactivarAdminModal" data-toggle="modal" data-target="#desactivarAdminModal" data-id="<?php echo $row['id_admin']; ?>" data-modal-type="deshabilitar-admin" class="btn btn-sm btn-warning open-modal"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
                                         <a href="#cont" data-toggle="modal" data-target="#cont" data-id="<?php echo $row['id_admin']; ?>" class="btn btn-sm btn-info open-modal"><i class="fa fa-plus-square" aria-hidden="true"></i></a></td>
                                     </tr>
                                     <?php
@@ -303,17 +291,27 @@ if (isset($_POST['admin_id_nuevo_encargado'])) {
 
 
 <script>
-        // Script para abrir el modal de deshabilitar administrador
-        $(document).on("click", ".disable-admin-modal", function () {
-            var adminId = $(this).data('id');
-            $("#admin_id_disable").val(adminId); // Corregir el ID del campo oculto
+$(document).on("click", ".open-modal", function () {
+    var adminId = $(this).data('id');
+    var modalType = $(this).data('modal-type');
 
-            // Obtener el valor seleccionado en el select y establecerlo en el campo correspondiente
-            var nuevoEncargadoId = $("#nuevo_encargado").val();
-            $("#admin_id_nuevo_encargado").val(nuevoEncargadoId);
+    if (modalType === 'deshabilitar-admin') {
+        // Establece los valores correctos para los campos ocultos en el modal de deshabilitar
+        $("#admin_id_encargado").val(adminId);
+        // No establezcas admin_id_nuevo_encargado aquí
 
-            $('#desactivarAdminModal').modal('show');
-        });
-    </script>
+        // Abre el modal para deshabilitar al administrador
+        $('#desactivarAdminModal').modal('show');
+    }
+});
+
+// Añade un evento adicional para manejar la selección del nuevo encargado
+$(document).on("change", "select[name='nuevo_encargado']", function () {
+    var nuevoEncargadoId = $(this).val();
+    $("#admin_id_nuevo_encargado").val(nuevoEncargadoId);
+});
+</script>
+
+
 
 
